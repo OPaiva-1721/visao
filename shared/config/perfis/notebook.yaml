@@ -1,0 +1,7 @@
+# Notebook i3 7ª geração na mochila (teste de campo 3a, ADR-012).
+inferencia:
+  runtime: openvino            # i3 é Intel
+  provider: cpu
+  imgsz: 320                   # spike S1b pode baixar para 256
+profundidade:
+  ligada: false                # sem obstáculo genérico; não é falha (ADR-013)

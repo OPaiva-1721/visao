@@ -1,0 +1,8 @@
+# App Flutter no Redmi 13C, Helio G85 (Fases 5 e 3b, ADR-014).
+inferencia:
+  runtime: litert
+  provider: gpu
+  imgsz: 320
+profundidade:
+  ligada: false                # liga a 1–2 Hz se o spike S4 permitir (arquitetura 11.1)
+  taxa_hz: 1

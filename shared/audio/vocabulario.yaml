@@ -1,0 +1,45 @@
+# Vocabulário falado (ADR-008). tools/gen_audio.py gera um .wav por chave com o Piper (pt-BR).
+# Chave = nome do arquivo (sem extensão); valor = texto falado.
+
+direcoes:
+  esquerda: esquerda
+  frente: frente
+  direita: direita
+
+objetos:                       # precisa cobrir todo "fala" de shared/config/classes.yaml (teste no CI)
+  pessoa: pessoa
+  bicicleta: bicicleta
+  moto: moto
+  carro: carro
+  onibus: ônibus
+  caminhao: caminhão
+  placa: placa
+  poste: poste
+  hidrante: hidrante
+  banco: banco
+  cadeira: cadeira
+  sofa: sofá
+  mesa: mesa
+  cama: cama
+  geladeira: geladeira
+  planta: planta
+  guarda_chuva: guarda-chuva
+  mala: mala
+  cachorro: cachorro
+  obstaculo: obstáculo
+
+sistema:
+  pronto: pronto                              # RN-23
+  encerrando: encerrando                      # RN-23
+  modo_caminhada: modo caminhada              # RN-20
+  modo_explorar: modo explorar
+  modo_silencioso: modo silencioso
+  falha_camera: falha na câmera               # RN-04
+  falha_lento: sistema lento
+  falha_erro: erro no sistema
+  degradado: detecção reduzida                # RN-34
+  pouca_luz: pouca luz                        # RN-27
+  bateria_20: bateria em vinte por cento      # RN-24
+  bateria_10: bateria em dez por cento
+  voltei: sistema voltou, estava desligado    # app morto pela Xiaomi (arquitetura 11)
+  nao_perturbe: ligue o não perturbe          # RN-35

@@ -1,0 +1,8 @@
+# PC de mesa, Ryzen 5 5600GT (desenvolvimento, Fases 1–2, avaliação em vídeo).
+inferencia:
+  runtime: onnxruntime
+  provider: cpu                # "directml" usa o vídeo integrado Vega 7 (spike S2)
+  imgsz: 320
+profundidade:
+  ligada: true
+  taxa_hz: 5

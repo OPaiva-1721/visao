@@ -1,0 +1,28 @@
+# Classes que geram alerta (RN-16). Chave = nome no modelo (COCO na Fase 1).
+#   fala:     chave em shared/audio/vocabulario.yaml (seção objetos) → clipe falado
+#   perigo:   1 (baixo) … 3 (alto), usado no desempate da RN-13
+#   altura_m: altura real típica para a distância por pinhole; null = sem pinhole (só profundidade)
+#   conf_min: opcional; sobrepõe confianca_padrao (RN-10)
+
+person:         {fala: pessoa,       perigo: 3, altura_m: 1.65, conf_min: 0.45}
+bicycle:        {fala: bicicleta,    perigo: 3, altura_m: 1.00, conf_min: 0.45}
+motorcycle:     {fala: moto,         perigo: 3, altura_m: 1.10}
+car:            {fala: carro,        perigo: 3, altura_m: 1.50}
+bus:            {fala: onibus,       perigo: 3, altura_m: 3.00}
+truck:          {fala: caminhao,     perigo: 3, altura_m: 3.00}
+stop sign:      {fala: placa,        perigo: 3, altura_m: null}
+parking meter:  {fala: poste,        perigo: 2, altura_m: 1.30}
+fire hydrant:   {fala: hidrante,     perigo: 2, altura_m: 0.60}
+bench:          {fala: banco,        perigo: 2, altura_m: 0.80}
+chair:          {fala: cadeira,      perigo: 2, altura_m: 0.90}
+couch:          {fala: sofa,         perigo: 1, altura_m: 0.85}
+dining table:   {fala: mesa,         perigo: 2, altura_m: 0.75}
+bed:            {fala: cama,         perigo: 1, altura_m: 0.60}
+refrigerator:   {fala: geladeira,    perigo: 2, altura_m: 1.70}
+potted plant:   {fala: planta,       perigo: 2, altura_m: null}
+umbrella:       {fala: guarda_chuva, perigo: 2, altura_m: null}
+suitcase:       {fala: mala,         perigo: 2, altura_m: 0.65}
+dog:            {fala: cachorro,     perigo: 2, altura_m: null}
+
+# Emitida pelo caminho geométrico (ADR-006), sem classe do modelo.
+obstaculo:      {fala: obstaculo,    perigo: 3, altura_m: null, conf_min: 0.0}

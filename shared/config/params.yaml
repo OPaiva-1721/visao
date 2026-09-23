@@ -1,0 +1,82 @@
+# Parâmetros das regras de negócio (docs/plano.md, seção 3).
+# Valores iniciais: calibrar nos testes com ela (Fases 3a/3b).
+# Perfis de máquina em perfis/*.yaml sobrepõem este arquivo (ADR-013).
+
+usuaria:
+  altura_m: 1.55
+  ombro_m: 1.25
+
+camera:
+  altura_m: 1.12           # peito (esterno)
+  inclinacao_graus: 10     # para cima; medido na montagem
+  orientacao: retrato      # ADR-011
+
+seguranca:
+  latencia_max_ms: 300         # RN-03, captura → começo do som (zona Perto)
+  mensagem_max_idade_ms: 500   # RN-06, mensagem mais velha que isso é descartada
+  falha_repete_s: 3            # RN-04, repetição do som de falha
+
+supervisor:                    # RN-04, RN-27, RN-34
+  captura_timeout_ms: 500
+  fps_minimo: 5
+  janela_fps_s: 2
+  luz_brilho_minimo: 40        # brilho médio 0–255 abaixo disso = "pouca luz"
+  luz_janela_s: 1
+
+corredor:                      # RN-08
+  largura_corpo_m: 0.45
+  margem_m: 0.30
+
+faixas_altura_m:               # RN-09
+  chao_ate: 0.50
+  tronco_ate: 1.25             # ombro
+  teto: 1.70                   # altura + 0.15; base acima disso é ignorada
+
+confianca_padrao: 0.50         # RN-10; classes.yaml pode sobrepor por classe
+
+zonas_m:                       # RN-12
+  perto: 1.0
+  atencao: 2.0
+
+persistencia:                  # RN-11 (n de m frames)
+  perto: {n: 2, m: 3}
+  padrao: {n: 3, m: 5}
+
+tracking:
+  ttl_s: 1.0                   # objeto some por mais que isso → Perdido
+
+cooldown_voz_s: 1.5            # RN-15
+
+profundidade:                  # ADR-005
+  ligada: true
+  taxa_hz: 5
+  max_idade_fusao_ms: 250      # mapa mais velho que isso não entra na fusão
+  max_idade_falha_ms: 500      # RN-34, mais velho que isso = modo degradado
+
+obstaculo_generico:            # ADR-006, arquitetura seção 4.3
+  distancia_max_m: 1.5
+  pixels_minimos: 400
+
+audio:
+  saida: mono                  # um ouvido só (U7); "estereo" liga o pan
+  direcao: voz                 # "voz" (opção A) ou "timbre" (opção B) — decidido na Fase 0.5
+  volume: 0.8
+  buffer_ms: 10
+  bipe:
+    duracao_ms: 60
+    ritmo_hz: {perto: 8, atencao: 3}
+    tom_hz: {chao: 400, tronco: 800, cabeca: 1400}
+
+modo_inicial: caminhada        # RN-20: caminhada | explorar | silencioso
+
+inicializacao_max_s: 10        # RN-23
+
+bateria:
+  avisos_pct: [20, 10]         # RN-24
+  sessao_max_min: 30           # RN-26 (U10)
+  sessao_consumo_max_pct: 20   # RN-26
+
+liberacao:                     # RN-30, critério para testar com ela
+  recall_perto_min: 0.90
+  falsos_alarmes_por_min_max: 1.0
+  janela_alerta_ms: 300

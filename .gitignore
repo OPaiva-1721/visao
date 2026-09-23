@@ -1,0 +1,38 @@
+# Dados locais: vídeos, datasets, pesos (ADR-009) — nunca versionar
+data/*
+!data/README.md
+*.mp4
+*.mov
+*.avi
+*.pt
+*.onnx
+*.tflite
+*_openvino_model/
+
+# Clipes de áudio gerados (reproduzíveis por lab/tools/gen_audio.py)
+shared/audio/*.wav
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Telemetria local
+*.jsonl
+!shared/traces/*.jsonl
+
+# Flutter / Dart
+mobile/**/.dart_tool/
+mobile/**/build/
+mobile/**/.flutter-plugins*
+
+# Editores e SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

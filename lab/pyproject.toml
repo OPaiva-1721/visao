@@ -10,9 +10,15 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Fase 0.5 em diante: bipes e clipes (ADR-008).
+# Fase 0.5 em diante: tocar bipes e clipes (ADR-008).
 audio = [
     "sounddevice>=0.5",
+]
+# Só para (re)gerar os clipes de voz com o Piper — nunca embarcado no app (ADR-008).
+# piper-tts (piper1-gpl) é GPL-3.0: ferramenta de build separada, compatível com o AGPL-3.0
+# deste repositório; o áudio gerado não herda a licença da ferramenta.
+voz = [
+    "piper-tts>=1.2",
 ]
 # Fase 1 em diante: detecção, tracking e captura.
 visao = [

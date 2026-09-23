@@ -2,7 +2,11 @@
 
 22/09/2026 · revisão do plano original com regras de negócio, perguntas em aberto e cronograma realista
 
-**Status (23/09/2026):** planejamento concluído; repositório criado com a estrutura da arquitetura (seção 10), configs de `shared/` preenchidas com os parâmetros das RNs, 14 ADRs em `docs/adr/` e CI (lint + testes). Próximo: **Fase 0.5**. O plano original está em [historico/plano-v1.md](historico/plano-v1.md).
+**Status (23/09/2026):** planejamento concluído; repositório criado com a estrutura da arquitetura (seção 10), configs de `shared/` preenchidas com os parâmetros das RNs, 15 ADRs em `docs/adr/` e CI (lint + testes).
+
+**Fase 0.5 (ferramenta pronta, sessão com ela ainda não feita):** `lab/tools/audio_test.py` toca os bipes (síntese em tempo real, testado sem hardware) e, se os clipes existirem, as frases das opções A e B. `lab/tools/gen_audio.py` gera os clipes de voz com o Piper (`uv sync --extra voz`, extra separado — ver comentário de licença no `pyproject.toml`). Falta: rodar `gen_audio.py` com uma voz pt-BR e sentar com ela para decidir `audio.direcao` (voz × timbre) e calibrar `audio.bipe.*`.
+
+O plano original está em [historico/plano-v1.md](historico/plano-v1.md).
 
 ## 1. Objetivo e premissas
 

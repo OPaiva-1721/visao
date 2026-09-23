@@ -477,7 +477,7 @@ Cada ADR tem um arquivo próprio em [adr/](adr/README.md), com contexto, alterna
 
 | Fase | Componentes |
 | --- | --- |
-| 0.5 | `audio/` (bipes + clipes + prioridade), `gen_audio.py`, `audio_test.py` |
+| 0.5 | `audio/synth.py` + `player.py` + `vocab.py` (bipes, playback, vocabulário), `gen_audio.py`, `audio_test.py`. A fila de prioridade P0–P4 (RN-06) entra na Fase 1, com o `AudioEngine` que consome `AlertPlan` |
 | 1 | `capture/`, `perception/detector`, `core/` completo (menos obstáculo genérico), `supervisor/`, `controls/` (teclado), `telemetry/`, `calibrate_camera.py`, `record_session.py`, `label_events.py`, `record_trace.py`, `eval.py`, CI |
 | 2 | `perception/depth`, `perception/geometry` com fusão, `perception/generic`, spikes S2 e S6 |
 | 3a | Perfil `notebook` + export OpenVINO, spike S1b, calibração de `params.yaml`, relatórios em `docs/testes-campo/` |

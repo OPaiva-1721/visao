@@ -18,6 +18,8 @@ def test_params_base_carrega_valores_das_rns():
     assert params["zonas_m"]["perto"] < params["zonas_m"]["atencao"]
     assert params["seguranca"]["latencia_max_ms"] == 300
     assert params["audio"]["saida"] == "mono"
+    # decidido com ela na Fase 0.5 (23/09): opção B — lado no timbre do bipe (docs/plano.md RN-18)
+    assert params["audio"]["direcao"] == "timbre"
 
 
 def test_faixas_de_altura_em_ordem_e_teto_acima_da_usuaria():

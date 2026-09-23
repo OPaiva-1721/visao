@@ -4,7 +4,7 @@
 
 **Status (23/09/2026):** planejamento concluído; repositório criado com a estrutura da arquitetura (seção 10), configs de `shared/` preenchidas com os parâmetros das RNs, 15 ADRs em `docs/adr/` e CI (lint + testes).
 
-**Fase 0.5 (ferramenta pronta, sessão com ela ainda não feita):** `lab/tools/audio_test.py` toca os bipes (síntese em tempo real, testado sem hardware) e, se os clipes existirem, as frases das opções A e B. `lab/tools/gen_audio.py` gera os clipes de voz com o Piper (`uv sync --extra voz`, extra separado — ver comentário de licença no `pyproject.toml`). Falta: rodar `gen_audio.py` com uma voz pt-BR e sentar com ela para decidir `audio.direcao` (voz × timbre) e calibrar `audio.bipe.*`.
+**Fase 0.5 concluída (23/09/2026):** sessão de áudio com ela feita — bipe + voz, opção B de direção (timbre), ritmo/tom/voz aprovados sem ajuste. Detalhe na seção da fase, abaixo. Próximo: **Fase 1**.
 
 O plano original está em [historico/plano-v1.md](historico/plano-v1.md).
 
@@ -29,7 +29,7 @@ Respostas coletadas em conversa direta. Todas as perguntas 🔴 de bloqueio (se�
 | # | Resposta |
 | --- | --- |
 | U1 | **Cegueira total** (não percebe luz/vulto). Simplifica: foco 100% em áudio, sem preocupação com contraste visual. |
-| U2 | Usa **só bengala**, sem cão-guia. **Não entende posição de relógio** → direção falada sempre como "esquerda / frente / direita" (RN-18). |
+| U2 | Usa **só bengala**, sem cão-guia. **Não entende posição de relógio** → quando a direção é falada (modo Explorar), é sempre "esquerda / frente / direita"; no alerta de obstáculo, o lado vai no timbre do bipe, não na voz (RN-18). |
 | U3 | **Esbarra mais na altura da cabeça/peito e em pessoas.** Confirma a aposta do plano: o ponto cego da bengala é exatamente o alvo. "Pessoa" já é classe nativa do COCO — ajuda desde a Fase 1. |
 | U4 | **Todo lugar, todo horário**, sempre **acompanhada**. Não dá pra restringir a um ambiente único como sugerido na Fase 0 original — o sistema precisa generalizar. Meta de longo prazo do projeto: dar autonomia pra ela andar sozinha. |
 | U5 | Preferência inicial: **bipe** (não voz). É palpite dele, não validado com ela — confirmar na Fase 0.5 antes de construir o resto. |
@@ -107,9 +107,9 @@ Os valores entre colchetes são **iniciais**: calibrar nos testes e confirmar co
 
 | ID | Regra |
 | --- | --- |
-| RN-17 | **Dois canais:** (a) bipe cujo ritmo acelera conforme a distância diminui, para alerta imediato; (b) voz curta para dizer o que é e onde está. |
-| RN-18 | **Direção:** como ela usa **fone em um ouvido só** (U7), o estéreo não serve para indicar lado. A direção vai (a) na **voz**, sempre como **"esquerda / frente / direita"** (ela **não** entende posição de relógio — confirmado em 23/09) e (b) opcionalmente no **timbre** do bipe (ex.: um som diferente para esquerda e para direita). Qual das duas funciona melhor é decidido na Fase 0.5. Estéreo volta a ser opção se um dia ela usar fone de condução óssea nos dois lados. |
-| RN-19 | **Vocabulário mínimo:** a frase segue o padrão `<objeto>, <direção>` (ex.: "poste, frente"). No máximo 3 palavras por frase. |
+| RN-17 | **Dois canais, sempre os dois** (confirmado com ela em 23/09 — nem só bipe, nem só voz): (a) bipe cujo ritmo acelera conforme a distância diminui, para alerta imediato; (b) voz curta para dizer o que é. |
+| RN-18 | **Direção — decidido com ela em 23/09: opção B.** Como ela usa **fone em um ouvido só** (U7), o estéreo não serve para indicar lado. Nos alertas de obstáculo (modo Caminhada, RN-17), o lado vai no **timbre do bipe** (`beep_with_side_timbre`, arquitetura 5.3): tom limpo = frente, "tic" agudo = esquerda, "toc" grave = direita. A voz só nomeia o objeto, sem dizer o lado. Fora do alerta reflexo — modo Explorar (RN-20), sem pressa, podendo nomear vários objetos — a direção pode ser falada, sempre como **"esquerda / frente / direita"** (ela **não** entende posição de relógio). Estéreo volta a ser opção se um dia ela usar fone de condução óssea nos dois lados. |
+| RN-19 | **Vocabulário mínimo:** no alerta de obstáculo (Caminhada), a frase é só o objeto (ex.: "poste") — o lado já veio no timbre do bipe (RN-18). No modo Explorar, pode ser `<objeto>, <direção>` (ex.: "poste, frente"). No máximo 3 palavras por frase. |
 | RN-20 | **Modos:** *Caminhada* (só obstáculos no corredor), *Explorar* (descreve o que está à frente quando ela pede) e *Silencioso* (só alertas da zona Perto). |
 | RN-21 | **Controle 100% não visual:** botão físico ou gesto. Cada ação tem som de confirmação. Nenhuma função depende de olhar para uma tela. |
 | RN-22 | Volume, velocidade da voz e modo ficam **salvos** entre usos. |
@@ -154,7 +154,7 @@ Melhor numa conversa presencial e, se ela topar, acompanhando um trajeto real.
 | # | Pergunta | Por que importa / o que muda | Quando |
 | --- | --- | --- | --- |
 | U1 | Cegueira total ou baixa visão? Percebe luz, vultos, contraste? | Com baixa visão, alto contraste e alertas mais leves podem bastar. Isso muda todo o design. | ✅ Cegueira total |
-| U2 | Usa bengala? Cão-guia? Fez treino de orientação e mobilidade? | Define o que o sistema complementa e se ela já conhece a posição de relógio (RN-18). | ✅ Só bengala; não entende posição de relógio |
+| U2 | Usa bengala? Cão-guia? Fez treino de orientação e mobilidade? | Define o que o sistema complementa e se ela já conhece a posição de relógio (RN-18). | ✅ Só bengala; não entende posição de relógio; direção falada só no modo Explorar |
 | U3 | **Em que ela mais esbarra?** Altura da cabeça/peito (galho, placa, orelhão, porta de armário) ou chão (degrau, buraco, meio-fio)? Pessoas? | Define a lista de classes (RN-16) e onde montar a câmera. É a pergunta mais importante. | ✅ Cabeça/peito + pessoas |
 | U4 | Em que ambiente isso acontece? Casa, rua, trabalho/faculdade, ônibus/metrô, mercado? | Interno e externo são problemas técnicos diferentes (luz, distância, classes). Começar por um só. | ✅ Todo lugar |
 | U5 | Anda sozinha nesses lugares ou acompanhada? Em que horário (luz do dia, noite)? | Uso noturno exige outra solução (RN-27, sensor ativo). | ✅ Sempre acompanhada, todo horário |
@@ -208,12 +208,15 @@ Motivo: a máquina forte (Ryzen) é PC de mesa e o único portátil é um i3 de 
 - Pesquisar os apps que ela já usa ou pode usar, para não duplicar funções.
 - **Saída:** top 10 obstáculos prioritários, ambiente inicial (interno ou externo), respostas 🔴 fechadas.
 
-### Fase 0.5 — Teste de áudio "de mentira" (1 semana, sem código de visão)
+### Fase 0.5 — Teste de áudio "de mentira" ✅ concluída (23/09/2026)
 
-- Montar um script que só toca os sons, **em um fone só** (como ela vai usar): bipes com ritmos e tons diferentes, as opções A (direção na voz) e B (direção no timbre) da Arquitetura seção 5.3, e frases curtas.
-- Ela avalia se entende, se incomoda e o que prefere (U6, RN-17 a RN-19).
-- É barato e evita construir um sistema inteiro com uma interface que ela vai rejeitar.
-- **Saída:** design de áudio aprovado.
+- Script que só toca os sons, em um fone só: bipes com ritmos e tons diferentes, as opções A e B de direção, e frases curtas (`lab/tools/audio_test.py`).
+- **Resultado da sessão com ela (23/09):**
+  - **Bipe + voz, os dois** — confirma RN-17.
+  - **Opção B** (direção no timbre do bipe, voz só nomeia o objeto) — RN-18, RN-19 atualizadas.
+  - Ritmo e tom do bipe: aprovados como estão (`shared/config/params.yaml`, sem ajuste).
+  - Voz do Piper (`pt_BR-faber-medium`): boa, velocidade ok — sem ajuste de `length_scale`.
+- **Saída:** design de áudio aprovado. Relatório em [testes-campo/2026-09-23-fase0.5.md](testes-campo/2026-09-23-fase0.5.md).
 
 ### Fase 1 — Protótipo de bancada (3–4 semanas)
 

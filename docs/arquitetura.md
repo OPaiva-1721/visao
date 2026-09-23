@@ -216,12 +216,11 @@ class SpeechSpec:
     priority: int
 ```
 
-**Proposta de design sonoro** (validar na Fase 0.5): o **ritmo** diz a distância, o **tom** diz a altura (agudo = cabeça). Ela usa **fone em um ouvido só** (U7), então o lado **não** pode vir do estéreo. Duas opções para testar com ela:
+**Design sonoro — decidido com ela em 23/09/2026 ([relatório](testes-campo/2026-09-23-fase0.5.md)): opção B.** O **ritmo** diz a distância, o **tom** diz a altura (agudo = cabeça), e o **timbre** diz o lado — tom limpo = frente, "tic" agudo = esquerda, "toc" grave = direita (`beep_with_side_timbre`, `lab/src/visao/audio/synth.py`). A voz só nomeia o objeto, sem repetir o lado. Ela usa **fone em um ouvido só** (U7), então isso substitui o estéreo.
 
-- **A — direção só na voz:** o bipe diz "quão perto e que altura"; a voz diz "pessoa, esquerda".
-- **B — direção no timbre:** um timbre por lado (ex.: bipe limpo = frente, "tic" seco = esquerda, "toc" grave = direita) e a voz só nomeia o objeto.
+A opção A (lado só na voz) fica reservada para o modo Explorar, sem a pressa do alerta reflexo.
 
-O `side` do `BeepSpec` é abstrato: o `AudioEngine` o transforma em timbre (`audio.saida: mono`) ou em pan (`audio.saida: estereo`), conforme a config. Trocar de fone não muda o núcleo.
+O `side` do `BeepSpec` é abstrato: o `AudioEngine` o transforma em timbre (`audio.saida: mono`, o caso dela) ou em pan (`audio.saida: estereo`), conforme a config. Trocar de fone não muda o núcleo.
 
 ## 6. Saída de áudio
 

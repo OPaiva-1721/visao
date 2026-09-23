@@ -6,7 +6,7 @@ Protótipo que ajuda uma pessoa cega a **não esbarrar em obstáculos na altura 
 
 ## Status
 
-Planejamento concluído (22–23/09/2026). **Fase 0.5** em andamento: a ferramenta de teste de áudio (`lab/tools/audio_test.py`) está pronta; falta a sessão com a usuária para decidir voz × timbre e calibrar os bipes.
+Planejamento concluído (22–23/09/2026). **Fase 0.5 concluída** (23/09): design de áudio aprovado com a usuária — bipe + voz, direção pelo timbre do bipe (opção B). Próxima etapa: **Fase 1** — protótipo de bancada.
 
 Ordem de execução: 0.5 → 1 → 2 → 3a → 5 → 3b → 4 ([ADR-012](docs/adr/012-teste-campo-duas-etapas.md)).
 

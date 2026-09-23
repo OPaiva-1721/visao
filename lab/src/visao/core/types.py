@@ -58,7 +58,9 @@ class BeepSpec:
 
 @dataclass(frozen=True)
 class SpeechSpec:
-    clip_keys: tuple[str, ...]  # chaves de shared/audio/vocabulario.yaml, ex.: ("pessoa", "frente")
+    # chaves de shared/audio/vocabulario.yaml. Com audio.direcao = "timbre" (decidido em 23/09),
+    # o lado já vem no bipe e não entra aqui: ex.: ("pessoa",), não ("pessoa", "esquerda").
+    clip_keys: tuple[str, ...]
     priority: int  # 0 = falha … 4 = informação (arquitetura seção 6)
 
 

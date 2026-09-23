@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import yaml
+
+from visao.core.types import ClassInfo
 
 # lab/src/visao/config.py → raiz do repositório
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -47,15 +48,6 @@ def load_params(profile: str | None = None, shared_dir: Path = SHARED_DIR) -> di
             f"perfil desconhecido: {profile!r} (disponíveis: {available_profiles(shared_dir)})"
         )
     return deep_merge(params, _read_yaml(profile_path))
-
-
-@dataclass(frozen=True)
-class ClassInfo:
-    name: str
-    fala: str
-    perigo: int
-    altura_m: float | None
-    conf_min: float | None
 
 
 def load_classes(shared_dir: Path = SHARED_DIR) -> dict[str, ClassInfo]:

@@ -36,6 +36,17 @@ Source = Literal["semantic", "geometric", "fused"]
 
 
 @dataclass(frozen=True)
+class ClassInfo:
+    """Uma linha de shared/config/classes.yaml (RN-16)."""
+
+    name: str
+    fala: str  # chave em shared/audio/vocabulario.yaml
+    perigo: int  # 1..3, usado na prioridade (RN-13)
+    altura_m: float | None  # altura típica, para a distância por pinhole (arquitetura 4.2)
+    conf_min: float | None  # sobrepõe confianca_padrao (RN-10) quando definido
+
+
+@dataclass(frozen=True)
 class Perception:
     track_id: int | None  # None para obstáculo genérico
     cls: str  # chave de classes.yaml, ou "obstaculo"

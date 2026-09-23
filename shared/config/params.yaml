@@ -60,6 +60,7 @@ obstaculo_generico:            # ADR-006, arquitetura seção 4.3
 audio:
   saida: mono                  # um ouvido só (U7); "estereo" liga o pan
   direcao: timbre               # "voz" (opção A) ou "timbre" (opção B) — decidido com ela em 23/09 (opção B)
+  lado_centro_m: 0.15           # |lateral_m| abaixo disso conta como "frente" (RN-18) no lado do bipe
   volume: 0.8
   buffer_ms: 10
   bipe:

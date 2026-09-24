@@ -57,6 +57,9 @@ obstaculo_generico:            # ADR-006, arquitetura seção 4.3
   distancia_max_m: 1.5
   pixels_minimos: 400
 
+deteccao:
+  borda_tolerancia_px: 2         # RN-33: caixa a até essa distância da borda conta como cortada
+
 audio:
   saida: mono                  # um ouvido só (U7); "estereo" liga o pan
   direcao: timbre               # "voz" (opção A) ou "timbre" (opção B) — decidido com ela em 23/09 (opção B)

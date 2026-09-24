@@ -6,7 +6,7 @@
 
 **Fase 0.5 concluída (23/09/2026):** sessão de áudio com ela feita — bipe + voz, opção B de direção (timbre), ritmo/tom/voz aprovados sem ajuste. Detalhe na seção da fase, abaixo.
 
-**Fase 1 em andamento:** núcleo de decisão pronto (`lab/src/visao/core/decide.py`, RN-08 a RN-16 e RN-33) e o slot de captura "último frame vence" (`lab/src/visao/capture/`, ADR-004) — 78 testes. Falta o detector, o motor de áudio de verdade (precisa de thread própria) e as ferramentas de gravação/avaliação — ver a tabela da arquitetura, seção 14.
+**Fase 1 em andamento:** núcleo de decisão pronto (`lab/src/visao/core/decide.py`, RN-08 a RN-16 e RN-33) e o slot de captura "último frame vence" (`lab/src/visao/capture/`, ADR-004) — 78 testes. **Spike S1 concluído (23/09): YOLO26n a 320 px roda a 115,8 fps no Ryzen (CPU), bem acima da meta de 15 fps** — [detalhe](testes-campo/2026-09-23-spike-s1.md). Falta o código do detector de verdade, o motor de áudio (precisa de thread própria) e as ferramentas de gravação/avaliação — ver a tabela da arquitetura, seção 14.
 
 O plano original está em [historico/plano-v1.md](historico/plano-v1.md).
 

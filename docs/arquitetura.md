@@ -283,16 +283,16 @@ O YOLO e o ONNX Runtime liberam o GIL durante a inferência, então as threads r
 
 **Orçamento para RN-03 (≤ 300 ms, captura → som):**
 
-| Etapa | Estimativa (notebook, CPU) |
-| --- | --- |
-| Exposição + leitura da câmera | ~35 ms |
-| YOLO26n 320 px (ONNX Runtime; sem NMS) | ~15–35 ms |
-| Tracking + geometria + decisão | < 5 ms |
-| Persistência (2 de 3 frames na zona Perto, a ~15 fps) | ~130 ms |
-| Buffer de áudio | ~10–20 ms |
-| **Total** | **~195–225 ms** |
+| Etapa | Estimativa (notebook, CPU) | Medido (PC, Ryzen 5 5600GT — spike S1, 23/09) |
+| --- | --- | --- |
+| Exposição + leitura da câmera | ~35 ms | ~35 ms (estimativa; sem captura de verdade ainda) |
+| YOLO26n 320 px (ONNX Runtime; sem NMS) | ~15–35 ms | **8,6 ms médio, p95 10,1 ms** (115,8 fps) |
+| Tracking + geometria + decisão | < 5 ms | < 5 ms |
+| Persistência (2 de 3 frames na zona Perto) | ~130 ms (a ~15 fps) | ~66 ms (a ~30 fps — o detector não é mais o limitador) |
+| Buffer de áudio | ~10–20 ms | ~10–20 ms |
+| **Total** | **~195–225 ms** | **~120–145 ms** |
 
-Apertado. Por isso a zona Perto usa persistência menor que as outras (trade-off consciente: um pouco mais de falso alarme em troca de alerta a tempo). Os números reais saem do spike S1 e ficam registrados a cada versão.
+No PC, o YOLO26n deixou de ser o gargalo — sobra folga de verdade para a RN-03 (300 ms). No notebook (i3), o spike S1b (ainda não rodado) decide se o mesmo vale lá; pela diferença de CPU, é bem provável que não. Detalhe completo do S1 em [testes-campo/2026-09-23-spike-s1.md](testes-campo/2026-09-23-spike-s1.md).
 
 ## 9. Avaliação e testes
 
@@ -464,7 +464,7 @@ Cada ADR tem um arquivo próprio em [adr/](adr/README.md), com contexto, alterna
 
 | # | Pergunta | Como testar | Fase | Se falhar |
 | --- | --- | --- | --- | --- |
-| S1 | YOLO26n a 320 px roda a ≥ 15 fps no Ryzen 5 5600GT (CPU)? | Benchmark com ONNX Runtime (CPU) | 1 (1º dia) | Entrada 256 px |
+| ~~S1~~ | ✅ **115,8 fps** (8,6 ms médio) — bem acima da meta de 15 fps | `tools/bench.py --imgsz 320` | 1 | — |
 | S1b | YOLO26n roda a ≥ 10 fps no i3 7ª geração com OpenVINO? A bateria aguenta ~1h30 de sessão? | Mesmo benchmark no notebook + teste de bateria | Antes da 3a | Entrada 256 px; sessões mais curtas ou notebook na tomada com extensão no corredor |
 | S2 | **YOLO26n-depth × Depth Anything V2 Small**: qual roda a ≥ 5 Hz junto com o YOLO e erra menos em metros? A que resolução? | Benchmark CPU × DirectML (Vega 7) + 20 medidas com trena, dentro e fora de casa | 2 (1º dia) | Reduzir resolução; ou só pinhole até ter sensor |
 | S3 | Com Flutter puro (`camera` + `flutter_foreground_task`), a câmera continua com a tela desligada no Redmi 13C? A Xiaomi mata o app? | App Flutter mínimo, 30 min de tela desligada | 5 (1º dia) | Tela ligada em brilho mínimo; ou plugin Kotlin mínimo só para isso |
@@ -477,7 +477,7 @@ Cada ADR tem um arquivo próprio em [adr/](adr/README.md), com contexto, alterna
 | Fase | Componentes |
 | --- | --- |
 | 0.5 | `audio/synth.py` + `player.py` + `vocab.py` (bipes, playback, vocabulário), `gen_audio.py`, `audio_test.py`. A fila de prioridade P0–P4 (RN-06) entra na Fase 1, com o `AudioEngine` que consome `AlertPlan` |
-| 1 | `core/decide.py` + `state.py` ✅ · `capture/` (slot + fonte falsa) ✅ (menos obstáculo genérico; fontes reais de câmera) — falta: `perception/detector`, `AudioEngine` (fila P0–P4, precisa de thread própria — seção 8), `supervisor/`, `controls/` (teclado), `telemetry/`, `calibrate_camera.py`, `record_session.py`, `label_events.py`, `record_trace.py`, `eval.py`, spike S1 |
+| 1 | `core/decide.py` + `state.py` ✅ · `capture/` (slot + fonte falsa) ✅ · spike S1 ✅ (115,8 fps) — falta: `perception/detector` (código de verdade, não só o benchmark), fontes reais de câmera, `AudioEngine` (fila P0–P4, precisa de thread própria — seção 8), `supervisor/`, `controls/` (teclado), `telemetry/`, `calibrate_camera.py`, `record_session.py`, `label_events.py`, `record_trace.py`, `eval.py` |
 | 2 | `perception/depth`, `perception/geometry` com fusão, `perception/generic`, spikes S2 e S6 |
 | 3a | Perfil `notebook` + export OpenVINO, spike S1b, calibração de `params.yaml`, relatórios em `docs/testes-campo/` |
 | 5 | `mobile/` inteiro, perfil `celular`, spikes S3–S5 |

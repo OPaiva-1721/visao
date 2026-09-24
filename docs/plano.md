@@ -6,7 +6,7 @@
 
 **Fase 0.5 concluída (23/09/2026):** sessão de áudio com ela feita — bipe + voz, opção B de direção (timbre), ritmo/tom/voz aprovados sem ajuste. Detalhe na seção da fase, abaixo.
 
-**Fase 1 em andamento:** núcleo de decisão pronto (`lab/src/visao/core/decide.py`, RN-08 a RN-16 e RN-33, 65 testes). Falta a captura da câmera, o detector, o motor de áudio de verdade e as ferramentas de gravação/avaliação — ver a tabela da arquitetura, seção 14.
+**Fase 1 em andamento:** núcleo de decisão pronto (`lab/src/visao/core/decide.py`, RN-08 a RN-16 e RN-33) e o slot de captura "último frame vence" (`lab/src/visao/capture/`, ADR-004) — 78 testes. Falta o detector, o motor de áudio de verdade (precisa de thread própria) e as ferramentas de gravação/avaliação — ver a tabela da arquitetura, seção 14.
 
 O plano original está em [historico/plano-v1.md](historico/plano-v1.md).
 

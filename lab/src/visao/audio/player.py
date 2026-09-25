@@ -10,6 +10,7 @@ from __future__ import annotations
 import wave
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Protocol, runtime_checkable
 
 import numpy as np
 
@@ -42,6 +43,17 @@ def _import_sounddevice():
     return sd
 
 
+@runtime_checkable
+class AudioPlayer(Protocol):
+    """O que `AudioEngine` precisa — permite injetar um falso nos testes (sem
+    hardware), do mesmo jeito que `FrameSource`/`FakeFrameSource` em capture/."""
+
+    def play(self, samples: np.ndarray, sample_rate: int, *, wait: bool = True) -> None: ...
+    def play_wav(self, path: Path, *, wait: bool = True) -> None: ...
+    def play_sequence(self, clips: list[tuple[np.ndarray, int]], *, gap_s: float = 0.2) -> None: ...
+    def stop(self) -> None: ...
+
+
 @dataclass
 class Player:
     """Toca waveforms numpy e clipes .wav. Saída mono por padrão (params.audio.saida)."""
@@ -57,6 +69,12 @@ class Player:
     def play_wav(self, path: Path, *, wait: bool = True) -> None:
         samples, sample_rate = load_wav(path)
         self.play(samples, sample_rate, wait=wait)
+
+    def stop(self) -> None:
+        """Interrompe o que estiver tocando agora — usado para trocar de fala no meio
+        (RN-17, arquitetura seção 6: prioridade mais alta corta a que está tocando)."""
+        sd = _import_sounddevice()
+        sd.stop()
 
     def play_sequence(self, clips: list[tuple[np.ndarray, int]], *, gap_s: float = 0.2) -> None:
         """Toca vários trechos em sequência, com uma pausa entre eles.

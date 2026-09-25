@@ -144,7 +144,7 @@ Os valores entre colchetes são **iniciais**: calibrar nos testes e confirmar co
 
 | ID | Regra |
 | --- | --- |
-| RN-33 | Objeto cuja caixa encosta na borda superior ou inferior da imagem é tratado como **Perto**, seja qual for a distância calculada. Objeto cortado sempre parece mais longe do que está. |
+| RN-33 | Objeto cuja caixa encosta na borda superior ou inferior da imagem é tratado como **Perto**, seja qual for a distância calculada. Objeto cortado sempre parece mais longe do que está — e por isso também **não pode ser descartado pela RN-09** (faixa de altura): a caixa cortada não mostra o objeto inteiro, então top/bottom não são confiáveis para o teto de 1,70 m. Achado testando com a DroidCam a 25/09; corrigido em `core/decide.py::_band()`. |
 | RN-34 | Se o mapa de profundidade estiver velho (> [500 ms]), o sistema entra em modo **degradado** (só detector semântico) e toca um aviso leve de falha. |
 
 ## 4. Perguntas a responder ANTES de começar

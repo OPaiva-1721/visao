@@ -5,7 +5,7 @@ import numpy as np
 
 from visao.capture.frame import Frame
 from visao.capture.slot import LatestFrameSlot
-from visao.capture.source import FakeFrameSource, FrameSource
+from visao.capture.source import CameraFrameSource, FakeFrameSource, FrameSource
 
 
 def make_frame(t_capture: float) -> Frame:
@@ -125,3 +125,62 @@ def test_fake_frame_source_start_stop_nao_quebram():
     source.push(make_frame(time.monotonic()))
     source.stop()
     assert source.latest() is not None
+
+
+# --- CameraFrameSource (câmera falsa, sem cv2 nem hardware) --------------------
+
+
+class FakeCV2Capture:
+    """Imita o suficiente de `cv2.VideoCapture` para testar `CameraFrameSource`."""
+
+    def __init__(self, quadros: int = 3, abre: bool = True) -> None:
+        self._quadros_restantes = quadros
+        self._aberta = abre
+        self.liberada = False
+
+    def isOpened(self) -> bool:  # noqa: N802 — nome do cv2, não escolha nossa
+        return self._aberta
+
+    def read(self) -> tuple[bool, np.ndarray]:
+        if self._quadros_restantes <= 0:
+            time.sleep(0.01)
+            return False, np.zeros((1, 1), dtype=np.uint8)
+        self._quadros_restantes -= 1
+        return True, np.zeros((2, 2), dtype=np.uint8)
+
+    def release(self) -> None:
+        self.liberada = True
+
+
+def test_camera_frame_source_implementa_o_protocol():
+    assert isinstance(CameraFrameSource(), FrameSource)
+
+
+def test_camera_frame_source_falha_ao_abrir_lanca_erro():
+    fonte = CameraFrameSource(abrir_camera=lambda _device: FakeCV2Capture(abre=False))
+    try:
+        fonte.start()
+        raise AssertionError("deveria ter lançado RuntimeError")
+    except RuntimeError:
+        pass
+
+
+def test_camera_frame_source_captura_frames_e_libera_ao_parar():
+    capturas: list[FakeCV2Capture] = []
+
+    def abrir(_device: int | str) -> FakeCV2Capture:
+        cap = FakeCV2Capture(quadros=5)
+        capturas.append(cap)
+        return cap
+
+    fonte = CameraFrameSource(abrir_camera=abrir)
+    fonte.start()
+    for _ in range(50):
+        if fonte.latest() is not None:
+            break
+        time.sleep(0.01)
+    frame = fonte.latest()
+    fonte.stop()
+
+    assert frame is not None
+    assert capturas[0].liberada

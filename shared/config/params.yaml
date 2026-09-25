@@ -10,6 +10,7 @@ camera:
   altura_m: 1.12           # peito (esterno)
   inclinacao_graus: 10     # para cima; medido na montagem
   orientacao: retrato      # ADR-011
+  dispositivo: 0           # índice do cv2.VideoCapture (DroidCam); sobrepor no perfil se a máquina tiver outra webcam
 
 seguranca:
   latencia_max_ms: 300         # RN-03, captura → começo do som (zona Perto)

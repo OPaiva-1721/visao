@@ -350,7 +350,7 @@ visao/
 ├── lab/                         ← Python (Fases 0.5–4)
 │   ├── pyproject.toml
 │   ├── src/visao/
-│   │   ├── capture/             ← FrameSource: webcam, arquivo, DroidCam
+│   │   ├── capture/             ← FrameSource: CameraFrameSource (webcam/DroidCam), arquivo
 │   │   ├── perception/          ← detector, tracker, depth, geometry, generic
 │   │   ├── core/                ← núcleo puro: decide(), estados, tipos
 │   │   ├── audio/               ← beeps, clipes, prioridade
@@ -477,7 +477,7 @@ Cada ADR tem um arquivo próprio em [adr/](adr/README.md), com contexto, alterna
 | Fase | Componentes |
 | --- | --- |
 | 0.5 | `audio/synth.py` + `player.py` + `vocab.py` (bipes, playback, vocabulário), `gen_audio.py`, `audio_test.py`. A fila de prioridade P0–P4 (RN-06) entra na Fase 1, com o `AudioEngine` que consome `AlertPlan` |
-| 1 | `core/decide.py` + `state.py` ✅ · `capture/` ✅ · spike S1 ✅ · `perception/detector.py` ✅ (produz `Detection`, ainda sem distância — geometria é Fase 2) · `supervisor/` ✅ (RN-04, RN-27, RN-34 — bateria fica para a Fase 5) · `controls/` ✅ (teclado, RN-20 a RN-22) · `telemetry/` ✅ (RN-28) · `audio/engine.py` ✅ (fila P0–P4, RN-06/RN-15/RN-17, duas threads — bipe e voz — que o SO mixa; validado sem exceção/deadlock, qualidade do som ainda por ouvir com calma) — falta: fontes reais de câmera, `calibrate_camera.py`, `record_session.py`, `label_events.py`, `record_trace.py`, `eval.py` |
+| 1 | `core/decide.py` + `state.py` ✅ · `capture/` ✅ (`LatestFrameSlot`, `FakeFrameSource`) · `CameraFrameSource` ✅ (webcam/DroidCam via OpenCV, testado de verdade com a DroidCam do PC — 21 fps) · spike S1 ✅ · `perception/detector.py` ✅ (produz `Detection`, ainda sem distância — geometria é Fase 2) · `supervisor/` ✅ (RN-04, RN-27, RN-34 — bateria fica para a Fase 5) · `controls/` ✅ (teclado, RN-20 a RN-22) · `telemetry/` ✅ (RN-28) · `audio/engine.py` ✅ (fila P0–P4, RN-06/RN-15/RN-17, duas threads — bipe e voz — que o SO mixa; validado sem exceção/deadlock, qualidade do som ainda por ouvir com calma) — falta: `calibrate_camera.py`, `record_session.py`, `label_events.py`, `record_trace.py`, `eval.py` |
 | 2 | `perception/depth`, `perception/geometry` com fusão, `perception/generic`, spikes S2 e S6 |
 | 3a | Perfil `notebook` + export OpenVINO, spike S1b, calibração de `params.yaml`, relatórios em `docs/testes-campo/` |
 | 5 | `mobile/` inteiro, perfil `celular`, spikes S3–S5 |

@@ -65,15 +65,32 @@ def test_zone_rn33_objeto_cortado_forca_perto():
 
 def test_band_classificacao_por_altura():
     faixas = PARAMS["faixas_altura_m"]
-    assert _band(top_m=0.4, bottom_m=0.0, faixas=faixas) == Band.CHAO
-    assert _band(top_m=0.9, bottom_m=0.0, faixas=faixas) == Band.TRONCO
-    assert _band(top_m=1.65, bottom_m=0.0, faixas=faixas) == Band.CABECA
+    assert _band(top_m=0.4, bottom_m=0.0, faixas=faixas, truncated=False) == Band.CHAO
+    assert _band(top_m=0.9, bottom_m=0.0, faixas=faixas, truncated=False) == Band.TRONCO
+    assert _band(top_m=1.65, bottom_m=0.0, faixas=faixas, truncated=False) == Band.CABECA
 
 
 def test_band_rn09_ignora_objeto_com_base_acima_do_teto():
     """Ela passa por baixo — RN-09."""
     faixas = PARAMS["faixas_altura_m"]
-    assert _band(top_m=2.0, bottom_m=1.8, faixas=faixas) is None
+    assert _band(top_m=2.0, bottom_m=1.8, faixas=faixas, truncated=False) is None
+
+
+def test_band_rn33_cortado_nunca_e_descartado_mesmo_com_base_acima_do_teto():
+    """Caixa cortada pela borda tem top/bottom calculados sobre a pessoa incompleta —
+    não pode confiar no "acima do teto" e descartar quem está bem próxima (RN-33)."""
+    faixas = PARAMS["faixas_altura_m"]
+    assert _band(top_m=3.7, bottom_m=2.05, faixas=faixas, truncated=True) == Band.CABECA
+
+
+def test_decide_rn33_pessoa_muito_perto_e_cortada_ainda_gera_bipe():
+    """Regressão: geometria de uma caixa cortada pode calcular top/bottom fora de
+    qualquer faixa válida (visto ao vivo com a DroidCam, 25/09) — antes da correção,
+    RN-09 descartava o candidato antes do RN-33 poder forçar Perto."""
+    perceptions = make_perception(distance_m=0.3, top_m=3.7, bottom_m=2.05, truncated=True)
+    plans, _ = run([[perceptions]] * 3)
+    assert plans[-1].beep is not None
+    assert plans[-1].beep.band == Band.CABECA
 
 
 def test_side_frente_esquerda_direita():

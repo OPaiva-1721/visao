@@ -63,8 +63,15 @@ def _zone(distance_m: float, truncated: bool, zonas_m: dict) -> Zone:
     return Zone.LONGE
 
 
-def _band(top_m: float, bottom_m: float, faixas: dict) -> Band | None:
-    """None = base acima do teto (RN-09): ela passa por baixo, a percepção é ignorada."""
+def _band(top_m: float, bottom_m: float, faixas: dict, truncated: bool) -> Band | None:
+    """None = base acima do teto (RN-09): ela passa por baixo, a percepção é ignorada.
+
+    RN-33: objeto cortado pela borda tem top_m/bottom_m calculados sobre uma altura que
+    não é a real (a caixa não mostra o objeto inteiro) — não dá para confiar nesse
+    "acima do teto". Força CABECA em vez de arriscar descartar quem está bem próxima.
+    """
+    if truncated:
+        return Band.CABECA
     if bottom_m > faixas["teto"]:
         return None
     if top_m > faixas["tronco_ate"]:
@@ -95,7 +102,7 @@ def _classify(
             continue
         if abs(p.lateral_m) > largura:  # RN-08
             continue
-        band = _band(p.top_m, p.bottom_m, params["faixas_altura_m"])
+        band = _band(p.top_m, p.bottom_m, params["faixas_altura_m"], p.truncated)
         if band is None:  # RN-09
             continue
         zone = _zone(p.distance_m, p.truncated, params["zonas_m"])

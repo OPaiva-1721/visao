@@ -127,6 +127,14 @@ def test_fake_frame_source_start_stop_nao_quebram():
     assert source.latest() is not None
 
 
+def test_fake_frame_source_take_if_new_evita_reprocessar_o_mesmo_frame():
+    source = FakeFrameSource()
+    frame = make_frame(1.0)
+    source.push(frame)
+    assert source.take_if_new(None) is frame
+    assert source.take_if_new(1.0) is None  # já processado — evita rodar o detector de novo
+
+
 # --- CameraFrameSource (câmera falsa, sem cv2 nem hardware) --------------------
 
 
@@ -184,3 +192,20 @@ def test_camera_frame_source_captura_frames_e_libera_ao_parar():
 
     assert frame is not None
     assert capturas[0].liberada
+
+
+def test_camera_frame_source_take_if_new_evita_reprocessar_o_mesmo_frame():
+    def abrir(_device: int | str) -> FakeCV2Capture:
+        return FakeCV2Capture(quadros=5)
+
+    fonte = CameraFrameSource(abrir_camera=abrir)
+    fonte.start()
+    for _ in range(50):
+        if fonte.latest() is not None:
+            break
+        time.sleep(0.01)
+    primeiro = fonte.take_if_new(None)
+    fonte.stop()
+
+    assert primeiro is not None
+    assert fonte.take_if_new(primeiro.t_capture) is None

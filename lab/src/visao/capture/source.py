@@ -26,6 +26,11 @@ class FrameSource(Protocol):
     def latest(self) -> Frame | None:
         """O frame mais recente (ADR-004), ou None se nada foi capturado ainda."""
 
+    def take_if_new(self, last_t_capture: float | None) -> Frame | None:
+        """Como `latest()`, mas devolve None se o frame mais recente já foi processado
+        (mesmo `t_capture`) — evita reprocessar/rodar o detector de novo no mesmo frame,
+        o que rouba CPU de outras threads (áudio) sem nenhum ganho."""
+
 
 class FakeFrameSource:
     """Fonte de frames de mentira, para testar o resto do pipeline sem câmera nenhuma.
@@ -45,6 +50,9 @@ class FakeFrameSource:
 
     def latest(self) -> Frame | None:
         return self._slot.get()
+
+    def take_if_new(self, last_t_capture: float | None) -> Frame | None:
+        return self._slot.take_if_new(last_t_capture)
 
     def push(self, frame: Frame) -> None:
         self._slot.put(frame)
@@ -103,6 +111,9 @@ class CameraFrameSource:
 
     def latest(self) -> Frame | None:
         return self._slot.get()
+
+    def take_if_new(self, last_t_capture: float | None) -> Frame | None:
+        return self._slot.take_if_new(last_t_capture)
 
     def _loop(self) -> None:
         assert self._cap is not None
